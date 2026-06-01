@@ -22,20 +22,24 @@ repository = "https://github.com/GlomarGadaffi/shroud-speak"
 # Candidate set (see docs/ARCHITECTURE.md crate mapping):
 [workspace.dependencies]
 # --- substrate (shroud-core) ---
-# arti-client  = { version = "*", features = ["onion-service-service", "onion-service-client"] }
-# tor-rtcompat = "*"
-# tokio        = { version = "1", features = ["full"] }
-# snow         = "*"          # Noise handshake + transport
-# argon2       = "*"          # secret-at-rest KDF
-# zeroize      = "*"
-# getrandom    = "*"
-# --- voice app (shroud-speak) ---
-# cpal         = "*"          # cross-platform capture/playback
-# audiopus     = "*"          # libopus binding
-# fundsp       = "*"          # DSP voice effects (M4)
-# crossterm    = "*"
-# ratatui      = "*"          # M3 front-end
-# qrcode       = "*"
-# --- shared ---
-# anyhow       = "*"
-# tracing      = "*"
+arti-client   = { version = "0.23.0", features = ["onion-service-service", "onion-service-client", "vanguards", "experimental-api"] }
+tor-rtcompat  = "0.23.0"
+tor-cell      = "0.23.0"
+tor-hsservice = "0.23.0"
+tor-proto     = "0.23.0"
+tokio         = { version = "1", features = ["full"] }
+futures       = "0.3"
+anyhow        = "1.0"
+tracing       = "0.1"
+tracing-subscriber = "0.3"
+
+# --- deferred dependencies (M1 - M4) ---
+# cpal         = "0.15"       # cross-platform capture/playback
+# audiopus     = "0.3"        # libopus binding (requires CMake + MSVC compiler on Windows)
+# fundsp       = "0.17"       # DSP voice effects
+# crossterm    = "0.27"
+# ratatui      = "0.26"       # M3 front-end
+# qrcode       = "0.12"
+# snow         = "0.9"        # Noise handshake + transport
+# argon2       = "0.5"        # secret-at-rest KDF
+# zeroize      = "1.7"

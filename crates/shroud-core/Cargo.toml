@@ -1,0 +1,19 @@
+[package]
+name = "shroud-core"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+shroud-proto = { path = "../shroud-proto" }
+arti-client.workspace = true
+tor-rtcompat.workspace = true
+tor-hsservice.workspace = true
+tor-cell.workspace = true
+tor-proto.workspace = true
+tokio.workspace = true
+futures.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
