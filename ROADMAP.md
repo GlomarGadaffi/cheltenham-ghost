@@ -45,8 +45,9 @@ encrypted, framed messages; tampering and replay are rejected.
 
 Compose M0+M1+M2 into the actual product.
 
-- [ ] `shroud-core` glues tor stream + Noise + audio pipeline + session FSM.
-- [ ] `shroud-tui`: listen / call / settings / status, PTT in-call.
+- [ ] `shroud-core` provides the tor stream + Noise + session plumbing (medium-agnostic).
+- [ ] `shroud-speak` builds the voice app on it: audio pipeline + voice frames + front-end.
+- [ ] Front-end (in `shroud-speak`): listen / call / settings / status, PTT in-call.
 - [ ] Onion address display + `qrcode` terminal QR.
 - [ ] Clean teardown: zeroize, drop streams, no residue.
 
