@@ -1,41 +1,41 @@
-# shroud — workspace root (stub)
-# Start as a single crate; split into the members below once shroud-core stabilizes.
-# Crate names use a placeholder project name — rename when the name decision closes.
+# shroud-speak — workspace root
+#
+# "shroud" is the platform; "speak" is the first capability (voice/PTT) bolted onto it.
+# The substrate crates (core, proto) are medium-agnostic by design, so a future
+# shroud-text / shroud-drop reuses the same onion+Noise+framing spine instead of forking.
 
 [workspace]
 resolver = "2"
 members = [
-    "crates/shroud-core",   # engine: tor + noise + audio + session FSM (no UI)
-    "crates/shroud-proto",  # frame types + (de)serialization, no I/O
-    # "crates/shroud-tui",  # M3
-    # "crates/shroud-daemon",
+    "crates/shroud-core",   # substrate: arti onion transport + Noise + generic framing (lib, medium-agnostic)
+    "crates/shroud-proto",  # generic frame envelope, no I/O (lib)
+    "crates/shroud-speak",  # the voice app: audio pipeline + voice frame types + front-end (bin)
 ]
 
 [workspace.package]
 edition = "2021"
 license = "MIT"
 authors = ["Glomar"]
-repository = "https://github.com/GlomarGadaffi/shroud"  # update when repo + name finalized
+repository = "https://github.com/GlomarGadaffi/shroud-speak"
 
-# Dependency versions intentionally omitted until M0 pins a working arti release.
-# Candidate dependency set (see docs/ARCHITECTURE.md crate mapping):
+# Versions intentionally unpinned until M0 fixes a working arti release.
+# Candidate set (see docs/ARCHITECTURE.md crate mapping):
 [workspace.dependencies]
-# transport / tor
-# arti-client   = { version = "*", features = ["onion-service-service", "onion-service-client"] }
-# tor-rtcompat  = "*"
-# tokio         = { version = "1", features = ["full"] }
-# crypto
-# snow          = "*"          # Noise handshake + transport
-# argon2        = "*"          # secret-at-rest KDF
-# zeroize       = "*"
-# getrandom     = "*"
-# audio
-# cpal          = "*"          # cross-platform capture/playback
-# audiopus      = "*"          # libopus binding
-# fundsp        = "*"          # DSP voice effects (M4)
-# ui / misc
-# crossterm     = "*"
-# ratatui       = "*"          # M3
-# qrcode        = "*"
-# anyhow        = "*"
-# tracing       = "*"
+# --- substrate (shroud-core) ---
+# arti-client  = { version = "*", features = ["onion-service-service", "onion-service-client"] }
+# tor-rtcompat = "*"
+# tokio        = { version = "1", features = ["full"] }
+# snow         = "*"          # Noise handshake + transport
+# argon2       = "*"          # secret-at-rest KDF
+# zeroize      = "*"
+# getrandom    = "*"
+# --- voice app (shroud-speak) ---
+# cpal         = "*"          # cross-platform capture/playback
+# audiopus     = "*"          # libopus binding
+# fundsp       = "*"          # DSP voice effects (M4)
+# crossterm    = "*"
+# ratatui      = "*"          # M3 front-end
+# qrcode       = "*"
+# --- shared ---
+# anyhow       = "*"
+# tracing      = "*"
