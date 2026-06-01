@@ -9,7 +9,7 @@ This document is the contract. It is a draft and will be revised as the design f
 - **Metadata:** who is talking to whom, when, for how long, and from where.
 - **The shared secret** (and any persisted onion key).
 
-## In scope — what shroud aims to defend against
+## In scope — what shroud-speak aims to defend against
 
 1. **A network adversary** (ISP, local network, on-path observer) learning conversation
    content. *Mitigation:* Tor stream + Noise AEAD. Content is encrypted twice over.
@@ -23,15 +23,15 @@ This document is the contract. It is a draft and will be revised as the design f
 6. **Forensic recovery of conversation audio.** *Mitigation:* audio never touches disk;
    RAM-only ring buffers; optional ephemeral onion (no persisted key at all).
 
-## Out of scope — what shroud does NOT protect against
+## Out of scope — what shroud-speak does NOT protect against
 
 State these plainly so nobody is misled:
 
 1. **Endpoint compromise.** A rooted/jailbroken device, malware, a keylogger, or a screen
-   recorder defeats shroud completely. It protects the channel, not the machine.
+   recorder defeats shroud-speak completely. It protects the channel, not the machine.
 2. **Coerced disclosure.** Rubber-hose / legal compulsion of the shared secret or device.
 3. **Global passive adversary traffic analysis.** Tor's own threat model excludes an
-   adversary who can watch the whole network; shroud inherits that limit. Padding / cover
+   adversary who can watch the whole network; shroud-speak inherits that limit. Padding / cover
    traffic (M4) *raises the cost* of timing correlation but does not defeat a GPA.
 4. **Voice biometrics.** The protocol hides *who is connected*; it does not disguise a
    *recognizable voice*. Voice effects (M4) are obfuscation, not anonymity — treat them
@@ -59,7 +59,7 @@ per-platform reality at M5; do not promise uniform guarantees across platforms.
 
 ## Non-goals as design discipline
 
-shroud is deliberately a **point-to-point walkie-talkie**, not a messenger. No user
+shroud-speak is deliberately a **point-to-point walkie-talkie**, not a messenger. No user
 directory, no presence, no message history, no accounts. Every feature that would create
 durable metadata is a non-goal, because the cheapest metadata to protect is the kind that
 was never generated.
