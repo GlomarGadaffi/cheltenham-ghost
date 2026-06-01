@@ -7,15 +7,30 @@ something runnable. Nothing past M0 is worth building until M0 proves the premis
 
 Prove the whole architecture is possible. ~150 lines, throwaway-quality allowed.
 
-- [ ] `arti-client`: bootstrap a `TorClient`.
-- [ ] `launch_onion_service` → obtain a `.onion` address at runtime.
-- [ ] From the *same* client, dial that `.onion` and accept the inbound stream.
-- [ ] Round-trip arbitrary bytes both directions over the stream.
+**Status (2026-06-01): spike implemented and compiling; not yet run.** Self-contained in
+[`crates/m0-spike`](../crates/m0-spike) (`cargo run -p m0-spike`). Type-checks and builds
+against arti **0.42.0** (current) and **0.23.0**. M0 stays **open** until it runs
+end-to-end against live Tor and the security posture is confirmed — see
+[issue #12](https://github.com/GlomarGadaffi/shroud-speak/issues/12).
+
+- [~] `arti-client`: bootstrap a `TorClient`. *(coded, compiles, unrun)*
+- [~] `launch_onion_service` → obtain a `.onion` address at runtime. *(coded, compiles, unrun)*
+- [~] From the *same* client, dial that `.onion` and accept the inbound stream. *(coded, compiles, unrun)*
+- [~] Round-trip arbitrary bytes both directions over the stream. *(coded, compiles, unrun)*
 - [ ] Confirm vanguards / onion-service DoS hardening features are available and enabled.
 
 **Exit criterion:** bytes echo through a self-hosted onion with zero external processes.
 If this can't be made to work cleanly, the Tor-layer decision reopens (fall back to
 linking C-tor) *before* any other code exists.
+
+**Notes from building against current arti (0.42):**
+
+- `launch_onion_service` returns `Result<Option<_>>` (None ⇒ the onion-service feature
+  isn't compiled in) — a single `?` was enough on 0.23.
+- `onion_name()` is deprecated → `onion_address()`; `HsId` is redacted by default, so use
+  `safelog::DisplayRedacted::display_unredacted()` to render the real `.onion`.
+- dialing a `.onion` needs the `onion-service-client` feature **and** `allow_onion_addrs`
+  set in `TorClientConfig`, not just the cargo feature.
 
 ## M1 — Audio loopback, in memory
 

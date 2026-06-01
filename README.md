@@ -34,18 +34,21 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full mapping and rati
 
 ## Status
 
-**Pre-alpha / design.** Nothing here runs yet. The first milestone is a de-risking spike
-(M0) that proves the core premise — hosting and self-dialing an onion service in-process
-with no external `tor`. See [`docs/ROADMAP.md`](docs/ROADMAP.md).
+**Pre-alpha.** The M0 de-risking spike — hosting and self-dialing an onion service
+in-process with no external `tor` — is implemented in [`crates/m0-spike`](crates/m0-spike)
+and **compiles against arti 0.42** (`cargo run -p m0-spike`). It has **not** yet been run
+end-to-end against the live Tor network, so the premise isn't fully proven. See
+[`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Layout
 
 ```
 shroud-speak/                 (repo)
   crates/
-    shroud-core/    substrate: arti onion transport + Noise + generic framing (medium-agnostic)
-    shroud-proto/   generic frame envelope, no I/O — unit-testable in isolation
-    shroud-speak/   the voice app: audio pipeline + voice frame types + front-end
+    m0-spike/       throwaway M0 spike: in-process onion + self-dial (compiles vs arti 0.42)
+    shroud-core/    [M2/M3] substrate: arti onion transport + Noise + framing (medium-agnostic)
+    shroud-proto/   [M2] generic frame envelope, no I/O — unit-testable in isolation
+    shroud-speak/   [M3] the voice app: audio pipeline + voice frame types + front-end
   docs/
 ```
 
