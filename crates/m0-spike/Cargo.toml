@@ -1,0 +1,37 @@
+[package]
+name = "m0-spike"
+version = "0.0.0"
+edition = "2021"
+license = "MIT"
+publish = false
+
+# ─────────────────────────────────────────────────────────────────────────────
+# M0 de-risking spike — Tor ONLY, on purpose.
+#
+# No cpal / audiopus / ratatui / snow / zeroize here: M0 proves the onion premise
+# and nothing else, so it must not be blocked by an unrelated audio/UI build (see
+# docs/ROADMAP.md "nothing past M0 is worth building until M0 proves the premise").
+# This whole crate is throwaway and can be deleted at M0 exit.
+#
+# VERSIONS: arti's library crates are currently published in lockstep (all on the
+# same number, 0.42.x as of this writing), but the onion-service APIs have churned a
+# lot across releases. Pin a coherent set and commit Cargo.lock. To move forward:
+#     cargo add arti-client --features onion-service-service,onion-service-client
+#     cargo add tor-hsservice tor-cell
+# Verified to compile against BOTH 0.23.0 and 0.42.0 (this repo's Cargo.lock pins
+# the latter).
+# ─────────────────────────────────────────────────────────────────────────────
+[dependencies]
+arti-client = { version = "0.42", features = [
+    "onion-service-service", # host the onion service in-process
+    "onion-service-client",  # dial a .onion as a client  ← the draft plan omitted this
+] }
+tor-hsservice = "0.42" # handle_rend_requests + OnionServiceConfigBuilder
+tor-cell = "0.42"      # Connected message used to accept an inbound stream
+safelog = "0.8"        # DisplayRedacted trait: HsId hides the .onion unless asked
+
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "io-util", "time"] }
+futures = "0.3"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

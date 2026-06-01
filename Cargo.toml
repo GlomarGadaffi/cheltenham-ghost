@@ -7,10 +7,15 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/shroud-core",   # substrate: arti onion transport + Noise + generic framing (lib, medium-agnostic)
-    "crates/shroud-proto",  # generic frame envelope, no I/O (lib)
-    "crates/shroud-speak",  # the voice app: audio pipeline + voice frame types + front-end (bin)
+    # M0 de-risking spike (throwaway; delete at M0 exit). Tor-only deps so the
+    # premise spike can't be blocked by an unrelated audio/UI build.
+    "crates/m0-spike",
 ]
+# The real crates are scaffolded at their milestones (see docs/ROADMAP.md) so M0
+# doesn't drag in audio / Noise / UI deps before the premise is proven:
+#   "crates/shroud-proto",  # M2     generic frame envelope, no I/O (lib)
+#   "crates/shroud-core",   # M2/M3  arti onion transport + Noise substrate (lib)
+#   "crates/shroud-speak",  # M3     voice app: audio pipeline + front-end (bin)
 
 [workspace.package]
 edition = "2021"
