@@ -9,7 +9,7 @@ and is simply absent; its job is done by in-process channels and a real socket A
 
 ```
   ┌─────────────────────────────────────────────────────────────┐
-  │                        shroud process                         │
+  │                        shroud-speak process                         │
   │                                                               │
   │   cpal capture ─▶ ring buf ─▶ opus enc ─▶ Noise/AEAD ─┐       │
   │                                                       ▼       │
@@ -96,20 +96,23 @@ Two viable shapes:
    of the same engine, and lets a TUI, CLI, or GUI all be thin front-ends. More work,
    strictly more flexible, and aligned with the broader hardware direction.
 
-Recommendation: build the engine as a library crate (`shroud-core`) from day one so the
-monolith and the daemon are both thin shells over it. That defers the decision without
-cost — M0–M2 are identical either way.
+Recommendation (settled): `shroud-core` is a library from day one, so the voice front-end
+— and anything bolted on later — is a thin shell over the same engine. That defers the
+TUI-vs-daemon decision to M3/M5 at no cost; M0–M2 are identical either way.
 
-## Crate layout (proposed)
+## Crate layout
+
+`shroud` is the platform, `speak` is the first capability. The substrate is medium-agnostic
+on purpose: voice is one payload type, and a later `shroud-text` / `shroud-drop` reuses the
+same onion+Noise+framing spine rather than forking it.
 
 ```
-shroud/
+shroud-speak/
   Cargo.toml            # workspace
   crates/
-    shroud-core/        # engine: tor, noise, audio, session FSM (no UI)
-    shroud-proto/       # frame types + (de)serialization, no I/O
-    shroud-tui/         # crossterm/ratatui front-end  (M3)
-    shroud-daemon/      # control-socket front-end       (post-M3, if chosen)
+    shroud-core/        # SUBSTRATE: arti onion transport, Noise, session plumbing — medium-agnostic, no UI
+    shroud-proto/       # generic frame envelope (type/len/payload) + (de)serialization, no I/O
+    shroud-speak/       # THE VOICE APP: cpal audio pipeline, voice frame types, front-end (bin)
   docs/
 ```
 
