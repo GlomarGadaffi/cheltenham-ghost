@@ -26,8 +26,7 @@ A Noise handshake keyed by the pre-shared secret. Candidate patterns:
 - **`XKpsk2`** — if we later give each peer a long-term static key (identity beyond the
   shared secret), this adds responder identity hiding + initiator auth.
 
-Decision deferred to M2; `NNpsk0` is the working assumption. PSK is derived from the
-user's shared secret via HKDF (not used raw).
+Decision deferred to M2; `NNpsk0` is the working assumption. To protect against online guessing and offline brute-force attacks on human-chosen passphrases, the PSK is derived from the user's shared secret via a memory-hard KDF (**Argon2id**), rather than fast HKDF alone. If raw high-entropy 32-byte keys are generated for the users, they may bypass the Argon2id step.
 
 The old `CIPHER:` negotiation verb is **removed** — cipher choice is fixed by the Noise
 suite (e.g. `Noise_NNpsk0_25519_ChaChaPoly_BLAKE2s`), not announced at runtime.

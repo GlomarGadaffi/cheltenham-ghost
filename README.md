@@ -30,13 +30,13 @@ than forking it. Voice is just the first payload.
 | external `tor` daemon + `torrc` + hostname file on disk | embedded [arti], optional ephemeral in-memory onion |
 | `install_deps` + per-package-manager branches | nothing to install |
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full mapping and rationale.
+See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full mapping and rationale.
 
 ## Status
 
 **Pre-alpha / design.** Nothing here runs yet. The first milestone is a de-risking spike
 (M0) that proves the core premise — hosting and self-dialing an onion service in-process
-with no external `tor`. See [`docs/ROADMAP.md`](docs/ROADMAP.md).
+with no external `tor`. See [`ROADMAP.md`](ROADMAP.md).
 
 ## Layout
 
@@ -60,7 +60,7 @@ Audio capture/playback abstracted via `cpal` (ALSA / CoreAudio / WASAPI / Oboe).
 
 ## Threat model
 
-This is a security tool; read [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md) before trusting
+This is a security tool; read [`THREAT_MODEL.md`](THREAT_MODEL.md) before trusting
 it with anything. Short version: it targets network-adversary confidentiality and metadata
 resistance, **not** endpoint compromise. A rooted phone or a keylogger defeats it.
 
