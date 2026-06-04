@@ -1,0 +1,15 @@
+# Rust build artifacts
+/target/
+
+# Backtrace/debug
+*.pdb
+
+# Editor / OS cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Note: Cargo.lock IS committed — this workspace builds a binary (shroud-speak),
+# and a security tool targeting reproducible builds wants a pinned lockfile.

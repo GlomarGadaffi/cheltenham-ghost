@@ -7,6 +7,12 @@ license.workspace = true
 
 [dependencies]
 shroud-proto = { path = "../shroud-proto" }
+# arti transitively pulls in rusqlite for its key/state store. Force the bundled SQLite
+# so it compiles from source (via the C toolchain) instead of linking a system
+# `sqlite3.lib` — required on Windows, and the right call for the self-contained
+# static-binary goal (ROADMAP M5). Cargo feature unification applies this to the
+# transitive use; the version must match what arti resolves (libsqlite3-sys 0.30.x).
+libsqlite3-sys = { version = "0.30", features = ["bundled"] }
 arti-client.workspace = true
 tor-rtcompat.workspace = true
 tor-hsservice.workspace = true
@@ -17,3 +23,7 @@ futures.workspace = true
 anyhow.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
+
+[dev-dependencies]
+# Used by the m0_spike example for an ephemeral arti state/keystore dir (S8).
+tempfile = "3"

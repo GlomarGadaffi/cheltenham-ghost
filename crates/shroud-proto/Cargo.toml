@@ -5,5 +5,6 @@ edition.workspace = true
 authors.workspace = true
 license.workspace = true
 
+# Intentionally dependency-free: this is the foundational, no-I/O envelope crate.
+# It exposes a typed `FrameError` rather than pulling in an application error type.
 [dependencies]
-anyhow.workspace = true
