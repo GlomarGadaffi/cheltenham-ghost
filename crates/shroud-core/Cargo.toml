@@ -23,3 +23,7 @@ futures.workspace = true
 anyhow.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
+
+[dev-dependencies]
+# Used by the m0_spike example for an ephemeral arti state/keystore dir (S8).
+tempfile = "3"

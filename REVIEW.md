@@ -163,10 +163,16 @@ the spike disproved this.** From `tor-proto` 0.23 source:
   true root cause. Length-framed protocols (`shroud-proto`) should read by length and tolerate the
   `MISC` end explicitly rather than relying on a clean EOF.
 
-### Runtime follow-ups surfaced
-- The spike persists an onion identity to the arti keystore (same `.onion` across runs). The
-  threat model wants **ephemeral** onions (S8) — make ephemeral the M0/M4 default.
-- A4 still stands: the spike proves a one-shot echo, not a sustained/re-establishing stream.
+### Runtime follow-ups — addressed
+- **S8 (ephemeral onion) — done.** The spike now runs arti's state/keystore in a `tempfile`
+  temp dir wiped on exit, minting a fresh `.onion` per session (verified: the address changed
+  between runs). Caveat: arti 0.23 has no *true* in-memory onion key (`launch_onion_service`
+  can't override KeyMgr/StateMgr — arti #1186), so the key briefly touches a temp dir; on
+  Linux/Termux a tmpfs `TMPDIR` keeps it RAM-only. A fully in-memory key awaits arti.
+- **A4 (sustained + reconnect) — done.** The spike holds one stream open with periodic
+  keepalive traffic (`SHROUD_M0_SECS`, default 60, M0 target ≥ 300) and then re-dials on a
+  fresh stream. Verified on live Tor: 11 keepalives over 61s + a clean reconnect. A *forced
+  circuit rebuild* (vs. a fresh dial) is still a stronger test to add later.
 
 Everything else above is advice, not edits — the protocol and architecture decisions are the
 maintainer's to make.
