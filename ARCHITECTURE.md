@@ -28,7 +28,7 @@ Nothing in the audio path touches the filesystem.
 
 | Primitive (TerminalPhone) | Crate | Notes |
 | --- | --- | --- |
-| `tor` daemon, torrc, hostname file | `arti-client` | `TorClient::launch_onion_service`; key in keystore or ephemeral in-memory |
+| `tor` daemon, torrc, hostname file | `arti-client` | `TorClient::launch_onion_service`; key in the arti keystore. *No true in-memory ephemeral key in arti 0.23 ([arti#1186](https://gitlab.torproject.org/tpo/core/arti/-/issues/1186)); M0 approximates it with a temp-dir state store wiped on exit.* |
 | `socat` SOCKS4A / TCP-LISTEN, `mkfifo` | `arti-client` streams | `DataStream` read/write halves; no SOCKS hop |
 | `openssl enc` (AES-CBC) + `openssl dgst` (HMAC) | `snow` (Noise) | AEAD transport; replaces encrypt-then-MAC entirely |
 | `openssl ... -pbkdf2` (secret at rest) | `argon2` | memory-hard KDF; PBKDF2 was the weak link |

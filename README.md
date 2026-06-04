@@ -34,9 +34,19 @@ See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full mapping and rationale.
 
 ## Status
 
-**Pre-alpha / design.** Nothing here runs yet. The first milestone is a de-risking spike
-(M0) that proves the core premise — hosting and self-dialing an onion service in-process
-with no external `tor`. See [`ROADMAP.md`](ROADMAP.md).
+**Pre-alpha. M0 complete — transport only; no audio (M1) or crypto (M2) yet.**
+Released as [`v0.0.1-alpha`](https://github.com/GlomarGadaffi/shroud-speak/releases/tag/v0.0.1-alpha)
+(prerelease, M0 milestone). The core premise is proven on the **live Tor network**: a
+`TorClient` bootstraps, hosts an onion service in-process, self-dials its own `.onion`, and
+round-trips bytes both directions with **zero external `tor` process** — verified with an
+ephemeral onion plus sustained traffic and a reconnect. Run it yourself:
+
+```bash
+cargo run -p shroud-core --example m0_spike      # SHROUD_M0_SECS tunes the sustained phase
+```
+
+`v0.1.0` remains reserved for the M3 voice call. See [`ROADMAP.md`](ROADMAP.md) for milestone
+status and [`REVIEW.md`](REVIEW.md) for the design/code review and M0 runtime findings.
 
 ## Layout
 
@@ -69,16 +79,21 @@ resistance, **not** endpoint compromise. A rooted phone or a keylogger defeats i
 Resolved:
 - [x] **Name** — `shroud-speak` (platform `shroud` + capability `speak`).
 - [x] **`shroud-core` as a library from day one** — yes; everything else bolts onto it.
+- [x] **Tor layer:** [arti] — M0 proved in-process onion host + self-dial works (vanguards
+      feature compiled in, on by default for HS circuits). C-tor fallback not needed. Caveat:
+      arti 0.23 has no *true* in-memory ephemeral onion key ([arti#1186]); the M0 spike
+      approximates it with a temp-dir state store wiped on exit.
 
 Still open:
-- [ ] **Tor layer:** [arti] (recommended) vs. linking C-tor. Gated on confirming arti's
-      onion-service vanguards / DoS hardening is compiled in and on (verified at M0).
 - [ ] **Front-end shape:** TUI binary inside `shroud-speak` (M3 default) vs. headless daemon
       + thin clients (lets hardware be a first-class client; deferred, M5).
 - [ ] **Repo visibility:** private through M0–M2, flip public at `v0.1.0`? Or public now?
+- [ ] **Asserting active vanguards at runtime** — arti 0.23 exposes no accessor; a stronger
+      M0 check would read circuit-construction logs (issue #12).
 
 ## License
 
 MIT — see [`LICENSE`](LICENSE). Inherited from TerminalPhone.
 
 [arti]: https://gitlab.torproject.org/tpo/core/arti
+[arti#1186]: https://gitlab.torproject.org/tpo/core/arti/-/issues/1186
