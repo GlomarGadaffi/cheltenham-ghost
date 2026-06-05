@@ -3,6 +3,23 @@
 All notable changes to this project are documented here. This project is **pre-alpha**;
 versions before `v0.1.0` are milestone markers, not stable releases.
 
+## [Unreleased] — M2 secure transport (in progress)
+
+### Added
+- `shroud-core::transport`: M2 Noise (`snow`) handshake + AEAD transport carrying
+  `shroud-proto` frames, with Argon2id PSK derivation. `Noise_NNpsk0_25519_ChaChaPoly_BLAKE2s`;
+  explicit PSK source (`Psk::from_raw` / `from_passphrase`); deterministic domain-separated salt;
+  frozen Argon2id params (64 MiB / t=3 / p=1). 9 unit tests (handshake, round-trip, wrong-PSK,
+  tamper, replay/reorder, passphrase determinism, FrameTooLarge boundary, empty payload,
+  short-message, async duplex). Reviewed by the security + code agents — see `REVIEW.md`.
+- `TransportError::Closed` (clean peer EOF) and `TrailingBytes` (one-frame-per-message guard).
+
+### Notes / deferred (must-fix before M2 exit)
+- Handshake/recv **timeouts + concurrency bounds** (belongs at the M3 accept layer; documented
+  as caller MUST). Fatal-on-error + re-handshake-on-reconnect invariant. `XKpsk2` upgrade.
+  `mlock`/core-dump posture (snow 0.9 does not zeroize derived session keys). Argon2 Termux
+  benchmark. Parser fuzzing (issue #9).
+
 ## [v0.0.1-alpha] — M0 milestone (2026-06-04)
 
 **Status: pre-alpha. M0 (in-process onion transport) only — NO audio, NO Noise crypto yet.

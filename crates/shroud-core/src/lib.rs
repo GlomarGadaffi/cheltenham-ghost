@@ -1,6 +1,11 @@
 //! shroud-core: substrate containing the Arti onion client and Noise handshake.
 //!
-//! (Placeholder stubs, will be fully implemented starting from Milestone M2)
+//! M2 secure transport lives in [`transport`]; the arti onion client is still scaffolding
+//! (see `examples/m0_spike.rs` for the proven M0 onion path).
+
+pub mod transport;
+
+pub use transport::{NoiseSession, NoiseTransport, Psk, TransportError, PSK_LEN};
 
 #[derive(Default)]
 pub struct ShroudClient;

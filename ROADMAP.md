@@ -7,7 +7,7 @@ something runnable. Nothing past M0 is worth building until M0 proves the premis
 | --- | --- |
 | **M0** — in-process onion transport | ✅ **Done** — released `v0.0.1-alpha`, verified on live Tor |
 | M1 — audio loopback | Not started |
-| M2 — secure transport | Not started (`shroud-proto` codec landed early) |
+| M2 — secure transport | 🚧 **In progress** — Noise transport + `shroud-proto` implemented & tested; hardening pending |
 | M3 — vertical slice / first call (`v0.1.0`) | Not started |
 | M4 — hardening & parity | Not started |
 | M5 — platform reach | Not started |
@@ -52,18 +52,27 @@ Prove the real-time path without the network.
 
 **Exit criterion:** hold a key, hear your own voice with acceptable latency; no temp files.
 
-## M2 — Secure transport
+## M2 — Secure transport  *(in progress)*
 
-Prove the crypto layer in isolation.
+Prove the crypto layer in isolation. Core implemented in `shroud-core::transport`
+(+ `shroud-proto`); 20 unit tests pass (11 proto + 9 transport). See `REVIEW.md` "M2 secure
+transport" for the agency review and the must-fix-before-exit list.
 
-- [ ] `shroud-proto`: frame types + length-prefixed (de)serialization, fully unit-tested.
-- [ ] `snow` Noise handshake over a plain TCP socket (PSK pattern chosen + documented).
-- [ ] AEAD transport carrying framed messages; replay handling validated.
-- [ ] `argon2` secret-at-rest; `zeroize` + page-locking for key material.
+- [x] `shroud-proto`: frame envelope + length-prefixed (de)serialization, unit-tested.
+- [x] `snow` Noise handshake (NNpsk0, documented) over any `AsyncRead+AsyncWrite` (tested over
+      an in-memory duplex; plain TCP / Tor stream are the same trait).
+- [x] AEAD transport carrying framed messages; tamper + replay + reorder rejection validated.
+- [x] `argon2` PSK derivation (explicit raw-vs-passphrase, deterministic domain-separated
+      salt, frozen params); `zeroize` on `Psk`.
+- [ ] **Pattern decision:** `XKpsk2` vs `NNpsk0` (currently `NNpsk0`; review recommends `XKpsk2`).
+- [ ] **Hardening before exit:** handshake/recv timeouts + concurrency bounds; fatal-on-error
+      + re-handshake-on-reconnect invariant (+ test); `mlock`/core-dump posture (snow doesn't
+      zeroize session keys); fuzz the parser (issue #9); benchmark Argon2 on Termux.
 - [ ] Decision: arti restricted-discovery on top, or Noise PSK alone.
 
 **Exit criterion:** two local processes complete a handshake and exchange authenticated,
-encrypted, framed messages; tampering and replay are rejected.
+encrypted, framed messages; tampering and replay are rejected. *(Crypto met in-process; the
+deferred hardening above gates the milestone.)*
 
 ## M3 — Vertical slice: a real 1:1 call
 

@@ -176,3 +176,41 @@ the spike disproved this.** From `tor-proto` 0.23 source:
 
 Everything else above is advice, not edits — the protocol and architecture decisions are the
 maintainer's to make.
+
+---
+
+# M2 secure transport — implementation + review
+
+`shroud-core::transport` now implements the M2 crypto slice: a Noise (`snow`) handshake +
+AEAD transport carrying `shroud-proto` frames, with Argon2id PSK derivation. Pure crypto +
+framing, no audio/network — **9 unit tests pass, clippy clean**. Reviewed by the security and
+code agents (findings + resolutions below).
+
+**Design choices implemented:** `Noise_NNpsk0_25519_ChaChaPoly_BLAKE2s`; explicit PSK source
+(`Psk::from_raw` vs `from_passphrase`, never inferred — S2); deterministic domain-separated
+Argon2id salt from a session `label` (S3); frozen Argon2id params (64 MiB / t=3 / p=1);
+replay/reorder rejection via snow's sequential nonce (S4), test-verified against snow's source.
+
+**Verified correct by review (no change needed):** NNpsk0 message ordering + `psk(0,…)`
+placement; all buffer sizing against snow's actual bounds; every `as u16` cast is provably
+lossless; the `FrameTooLarge` guard is load-bearing (a max proto frame *can* exceed 65519);
+role separation; no panics; explicit-only raw-key bypass.
+
+**Addressed in this slice (from the M2 review):**
+- Corrected docs: `snow` 0.9 does **not** zeroize derived session keys (only `Psk` is wiped) —
+  documented as a known limit; pair with `mlock`/core-dump disabling at M3 (K-1).
+- `recv_frame` now returns `TransportError::Closed` on clean peer EOF (distinct from I/O fault) (H2).
+- `open_frame` rejects authenticated trailing bytes — enforces one-frame-per-message (M1).
+- `from_passphrase` rejects empty passphrase/label and documents that **the label is the salt**
+  (must be unique + hard-to-guess, or precomputation defeats Argon2) (A-1/S3).
+- `debug_assert` the `u16` framing invariants (L5); added tests for the `FrameTooLarge`
+  boundary, empty payload, and short-message cases.
+
+**Deferred — must-fix before M2 *exit* (not this slice):**
+1. **Timeouts + concurrency bounds** on handshake/`recv_frame` — no listener ships yet, so this
+   belongs at the M3 accept layer; documented as a caller MUST in the module docs (D-1).
+2. **Session-failure invariant**: any decrypt error is fatal → drop session + full re-handshake;
+   bound the reconnect loop. Documented as a caller MUST; add a reconnect test at M3 (S4/R-2).
+3. **`XKpsk2`** remains the recommended upgrade over `NNpsk0` (PSK is the sole authenticator;
+   a reachable responder is an online passphrase-guessing oracle throttled only by Argon2 cost) (S1).
+4. Benchmark Argon2id on the weakest target (Termux) before freezing the cost params (S3).

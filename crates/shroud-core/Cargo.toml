@@ -24,6 +24,13 @@ anyhow.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 
+# --- M2: secure transport ---
+snow = "0.9"          # Noise handshake + AEAD transport (pure-Rust default resolver)
+argon2 = "0.5"        # memory-hard PSK derivation from a passphrase
+sha2 = "0.10"         # deterministic salt derivation
+zeroize = "1.7"       # wipe key material on drop
+thiserror = "1.0"     # typed transport errors
+
 [dev-dependencies]
 # Used by the m0_spike example for an ephemeral arti state/keystore dir (S8).
 tempfile = "3"
