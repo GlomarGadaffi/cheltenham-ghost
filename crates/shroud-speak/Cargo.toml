@@ -12,3 +12,11 @@ tokio.workspace = true
 anyhow.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
+
+# --- M1: audio pipeline ---
+audiopus = "0.2"      # libopus binding (vendored; needs CMake + a C compiler to build)
+cpal = "0.15"         # cross-platform audio capture/playback (WASAPI/CoreAudio/ALSA/Oboe)
+
+[dev-dependencies]
+rtrb = "0.3"          # lock-free SPSC ring for the capture/playback path (example only)
+crossterm = "0.27"    # PTT key events for the live loopback example
