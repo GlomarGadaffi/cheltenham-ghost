@@ -13,3 +13,11 @@ Thumbs.db
 
 # Note: Cargo.lock IS committed — this workspace builds a binary (shroud-speak),
 # and a security tool targeting reproducible builds wants a pinned lockfile.
+
+# local docs — read the code
+docs/
+notes/
+*.txt
+LINEAGE.md
+*.old
+*.bak
