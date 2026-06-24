@@ -1,4 +1,4 @@
-# cheltenham-ghost
+# tor-voice
 
 in-process Tor (arti) + Opus codec + Noise protocol = encrypted voice-over-Tor endpoint. no daemons, no config files, no socket hijacking. real async I/O (tokio) owns all primitives. RX/TX audio via CPAL (cross-platform), encrypt with Noise, transit over arti's onion service.
 
@@ -40,12 +40,12 @@ latency: Tor adds 100–500 ms; keep local buffers minimal (1–2 frames).
 
 ```bash
 cargo build --release
-./target/release/cheltenham-ghost
+./target/release/tor-voice
 # → prints onion address, QR code
 # → listens on the onion service
 
 # From a peer:
-./target/release/cheltenham-ghost --peer <onion-address>
+./target/release/tor-voice --peer <onion-address>
 # → connects, runs PTT terminal session
 ```
 
